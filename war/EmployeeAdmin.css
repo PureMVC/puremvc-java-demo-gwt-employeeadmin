@@ -1,0 +1,137 @@
+
+body {
+  padding: 10px;
+}
+
+body, .pmvc-watchListUsers {
+  font-family: arial, sans-serif;
+  font-size: small;
+}
+
+.gwt-Button-remove {
+  width: 30px;
+}
+
+.positiveChange {
+  color: Green;
+}
+
+.negativeChange {
+  color: Red;
+}
+
+.noChange {
+  color: Black;
+}
+
+.addPanel {
+  margin: 25px 0px 25px 0px;
+}
+
+.pmvc-watchListHeaderUsers {
+  background-color: #2062B8;
+  color: white;
+  font-style: italic;
+}
+
+.pmvc-watchListNumericColumnUsers {
+  text-align: right;
+}
+
+.pmvc-watchListRemoveColumnUsers {
+  text-align: center;
+}
+
+pmvc-SelectedRowUsers td {
+	border-bottom: 1px solid #666;
+	border-top: 1px solid #666;
+}
+
+.pmvc-SelectedRowUsers {
+	background:silver;
+} 
+
+.pmvc-ListUsers {
+	font-size: 80%;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.pmvc-ListUsers td {
+	padding: 2px 2px 2px 10px;
+	height: 18px;
+}
+
+.pmvc-ListHeaderUsers {
+	font-size: 80%;
+	cursor: pointer;
+	cursor: hand;
+	background: #eee;
+	font-weight: bold;
+	border-left: 1px solid #666;
+	border-right: 1px solid #666;
+	border-top: 1px solid #666;
+	border-bottom: 1px solid #666;
+}
+
+.pmvc-ListHeaderUsers td {
+	padding: 2px 0 2px 10px;
+}
+
+.pmvc-NumberColumnUsers {
+	text-align: right;
+}
+
+.pmvc-listePanelUsers {
+	border: 1px solid #666;
+}
+
+.pmvc-listeFlowPanelUsers {
+	width: 780px;
+	height: 140px;
+}
+
+.pmvc-absolutePanelUsers {
+  width: 804px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-absoluteCaptionUsers {
+  height: 200px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-absolutePanelUserProfile {
+  width: 400px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-absoluteCaptionPanelUserProfile {
+  height: 260px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-absolutePanelUserRoles {
+  width: 400px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-absoluteCaptionPanelUserRoles {
+  height: 260px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+.pmvc-listBox1UserRoles {
+  width: 380px;
+  height: 210px;
+  padding: 2px 2px 2px 2px;
+  margin-left: 0px;
+}
+
+

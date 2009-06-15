@@ -4,12 +4,12 @@
  Your reuse is governed by the Creative Commons Attribution 3.0 License
  */
 
-package org.puremvc.client.employeeAdmin.model.vo;
+package org.puremvc.java.multicore.demos.gwt.employeeadmin.model.vo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.puremvc.client.employeeAdmin.model.enumerator.RoleEnum;
+import org.puremvc.java.multicore.demos.gwt.employeeadmin.model.enumerator.RoleEnum;
 
 /**
  * RoleVO.

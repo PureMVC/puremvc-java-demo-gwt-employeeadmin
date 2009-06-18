@@ -43,15 +43,15 @@ public class UserProxy extends Proxy {
 	 * @return data property cast to proper type
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<UserVO> users() {
-		return(ArrayList<UserVO>)this.getData();
+	public final ArrayList<UserVO> users() {
+		return (ArrayList<UserVO>) this.getData();
 	}
 
 	/**
 	 * Add an item to the data.
 	 * @param item the userVO
 	 */
-	public void addItem(UserVO item) {
+	public final void addItem(final UserVO item) {
 		users().add(item);
 	}
 
@@ -59,10 +59,10 @@ public class UserProxy extends Proxy {
 	 * Update an item in the data.
 	 * @param item the userVO
 	 */
-	public void updateItem(UserVO item) {
+	public final void updateItem(final UserVO item) {
 		UserVO user = item;
-		for(int i = 0; i < users().size(); i++) {
-			if(users().get(i).username == user.username) {
+		for (int i = 0; i < users().size(); i++) {
+			if (users().get(i).username.equals(user.username)) {
 				users().set(i, user);
 			}
 		}
@@ -72,10 +72,10 @@ public class UserProxy extends Proxy {
 	 * Delete an item in the data.
 	 * @param item the userVO
 	 */
-	public void deleteItem(UserVO item) {
+	public final void deleteItem(final UserVO item) {
 		UserVO user = item;
-		for(int i = 0; i < users().size(); i++) {
-			if(users().get(i).username == user.username) {
+		for (int i = 0; i < users().size(); i++) {
+			if (users().get(i).username.equals(user.username)) {
 				users().remove(i);
 			}
 		}

@@ -55,7 +55,7 @@ public class RoleProxy extends Proxy {
 	 * @return data property cast to proper type
 	 */
 	@SuppressWarnings("unchecked")
-	public List<RoleVO> roles() {
+	public final List<RoleVO> roles() {
 		return (List<RoleVO>) this.getData();
 	}
 
@@ -63,7 +63,7 @@ public class RoleProxy extends Proxy {
 	 * Add an item to the data.
 	 * @param item the item
 	 */
-	public void addItem(RoleVO item) {
+	public final void addItem(final RoleVO item) {
 		roles().add(item);
 	}
 	
@@ -71,9 +71,9 @@ public class RoleProxy extends Proxy {
 	 * Delete an item in the data.
 	 * @param item the item
 	 */
-	public void deleteItem(UserVO item) {
+	public final void deleteItem(final UserVO item) {
 		for (int i = 0; i < roles().size(); i++) {
-			if (roles().get(i).username == item.username) {
+			if (roles().get(i).username.equals(item.username)) {
 				roles().remove(i);
 			}
 		}
@@ -83,14 +83,15 @@ public class RoleProxy extends Proxy {
 	 * Determine if the user has a given role.
 	 * @param user the user
 	 * @param role the role
+	 * @return true if user have the role
 	 */
-	public boolean doesUserHaveRole(UserVO user, RoleEnum role) {
+	public final boolean doesUserHaveRole(final UserVO user, final RoleEnum role) {
 		boolean hasRole = false;
-		for(int i=0; i<roles().size(); i++) { 
-			if(roles().get(i).username.equals(user.username)) {
+		for (int i = 0; i < roles().size(); i++) { 
+			if (roles().get(i).username.equals(user.username)) {
 				List<RoleEnum> userRoles = roles().get(i).roles;
-				for(int j=0; j<userRoles.size(); j++) {
-					if(userRoles.get(j).equals(role)) {
+				for (int j = 0; j < userRoles.size(); j++) {
+					if (userRoles.get(j).equals(role)) {
 						hasRole = true;
 						break;
 					}
@@ -106,11 +107,11 @@ public class RoleProxy extends Proxy {
 	 * @param user the user
 	 * @param role the role
 	 */
-	public void addRoleToUser(UserVO user, RoleEnum role) {
+	public final void addRoleToUser(final UserVO user, final RoleEnum role) {
 		boolean result = false;
-		if(!doesUserHaveRole(user, role)) {
-			for(int i=0; i<roles().size(); i++) { 
-				if(roles().get(i).username.equals(user.username)) {
+		if (!doesUserHaveRole(user, role)) {
+			for (int i = 0; i < roles().size(); i++) { 
+				if (roles().get(i).username.equals(user.username)) {
 					List<RoleEnum> userRoles = roles().get(i).roles;
 					userRoles.add(role);
 					result = true;
@@ -126,13 +127,13 @@ public class RoleProxy extends Proxy {
 	 * @param user the user
 	 * @param role the role
 	 */
-	public void removeRoleFromUser(UserVO user, RoleEnum role) {
-		if(doesUserHaveRole(user, role)) {
-			for(int i=0; i<roles().size(); i++) {
-				if(roles().get(i).username.equals(user.username)) {
+	public final void removeRoleFromUser(final UserVO user, final RoleEnum role) {
+		if (doesUserHaveRole(user, role)) {
+			for (int i = 0; i < roles().size(); i++) {
+				if (roles().get(i).username.equals(user.username)) {
 					List<RoleEnum> userRoles = roles().get(i).roles;
-					for(int j=0; j<userRoles.size(); j++) { 
-						if(userRoles.get(j).equals(role)) {
+					for (int j = 0; j < userRoles.size(); j++) { 
+						if (userRoles.get(j).equals(role)) {
 							userRoles.remove(j);
 							break;
 						}
@@ -146,11 +147,12 @@ public class RoleProxy extends Proxy {
 	/**
 	 * Get a user's roles.
 	 * @param username the user name
+	 * @return the list of RoleEnum
 	 */
-	public List<RoleEnum> getUserRoles( String username ) {
+	public final List<RoleEnum> getUserRoles(final String username) {
 		List<RoleEnum> userRoles = new ArrayList<RoleEnum>();
-		for ( int i=0; i<roles().size(); i++) { 
-			if ( roles().get(i).username.equals(username)) {
+		for (int i = 0; i < roles().size(); i++) { 
+			if (roles().get(i).username.equals(username)) {
 				List<RoleEnum> roles = roles().get(i).roles;
 				userRoles = roles;
 				break;

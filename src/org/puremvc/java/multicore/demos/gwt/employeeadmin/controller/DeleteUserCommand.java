@@ -13,6 +13,9 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.model.vo.UserVO;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.command.SimpleCommand;
 	
+/**
+ * Delete user command.
+ */
 public class DeleteUserCommand extends SimpleCommand {
 
 	/**
@@ -20,10 +23,10 @@ public class DeleteUserCommand extends SimpleCommand {
 	 * and his roles. then send the USER_DELETED notification
 	 * @param notification notification
 	 */
-	public void execute(final INotification notification) {
-		UserVO user = (UserVO)notification.getBody();
-		UserProxy userProxy = (UserProxy)this.getFacade().retrieveProxy(UserProxy.NAME);
-		RoleProxy roleProxy = (RoleProxy)this.getFacade().retrieveProxy(RoleProxy.NAME);
+	public final void execute(final INotification notification) {
+		UserVO user = (UserVO) notification.getBody();
+		UserProxy userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
+		RoleProxy roleProxy = (RoleProxy) getFacade().retrieveProxy(RoleProxy.NAME);
 		userProxy.deleteItem(user);
 		roleProxy.deleteItem(user);
 		sendNotification(ApplicationFacade.USER_DELETED);

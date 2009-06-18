@@ -11,16 +11,19 @@ import org.puremvc.java.multicore.patterns.command.SimpleCommand;
 
 import com.google.gwt.user.client.Window;
 	
+/**
+ * Add role result command.
+ */
 public class AddRoleResultCommand extends SimpleCommand {
 
 	/**
-	 * Check if the the role already exists 
+	 * Check if the the role already exists.
 	 * and if it exists send an alert message 
 	 * @param notification notification
 	 */
-	public void execute(final INotification notification) {
-		Boolean result = (Boolean)notification.getBody();
-		if(result == Boolean.FALSE) {
+	public final void execute(final INotification notification) {
+		Boolean result = (Boolean) notification.getBody();
+		if (result == Boolean.FALSE) {
 			Window.alert("Role already exists for this user!");
 		}
 	}

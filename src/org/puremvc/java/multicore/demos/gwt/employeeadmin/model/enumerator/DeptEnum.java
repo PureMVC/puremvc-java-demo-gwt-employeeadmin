@@ -38,8 +38,10 @@ public class DeptEnum {
 
 	/**
 	 * Constructor.
+	 * @param value the value
+	 * @param ordinal the ordinal
 	 */
-	protected DeptEnum(String value, int ordinal) {
+	protected DeptEnum(final String value, final int ordinal) {
 		this.value = value;
 		this.ordinal = ordinal;
 	}
@@ -69,9 +71,10 @@ public class DeptEnum {
 
 	/**
 	 * Check if the deptEnum is equal.
+	 * @param deptEnum the depltEnum
 	 * @return whether it is currently equal
 	 */
-	public boolean equals(DeptEnum deptEnum) {
-		return (this.ordinal == deptEnum.ordinal && this.value == deptEnum.value);
+	public final boolean equals(final DeptEnum deptEnum) {
+		return (this.ordinal == deptEnum.ordinal && this.value.equals(deptEnum.value));
 	}
 }

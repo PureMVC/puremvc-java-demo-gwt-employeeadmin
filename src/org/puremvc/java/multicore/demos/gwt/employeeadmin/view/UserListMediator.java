@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
@@ -62,6 +63,8 @@ public class UserListMediator extends Mediator {
 	private int lastTableRow = 0;
 	private int selectedRow = -1;
 
+	private static final int SPACING = 3;
+	
 	/**
 	 * Constructor.
 	 */
@@ -71,7 +74,15 @@ public class UserListMediator extends Mediator {
 	}
 
 	/**
-	 * Initialize the grid view.
+	 * Set the parent panel view.
+	 * @param panel the parent panel
+	 */
+	public final void setParentPanel(final Panel panel) {
+		panel.add(aPanel);
+	}
+	
+	/**
+	 * Initialize the user list view.
 	 */
 	private void initView() {
 		aPanel.setStyleName("pmvc-absolutePanelUsers");
@@ -107,28 +118,30 @@ public class UserListMediator extends Mediator {
 		bNo.setVisible(false);
 		
 		vpanel.add(hp);
-		hp.setSpacing(3);
-		vpanel.setSpacing(3);
+		hp.setSpacing(SPACING);
+		vpanel.setSpacing(SPACING);
 		
 		table.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				Cell cell = table.getCellForEvent(event);
-				int row = cell.getRowIndex();
-				if (row > 0) {
-					selectRow(row - 1);
+				if (cell != null) {
+					int row = cell.getRowIndex();
+					if (row > 0) {
+						selectRow(row - 1);
+					}
 				}
 			}
 		});
 		
 		bNew.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onNew();
 			} 
 		});
 
 		bDelete.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if(selectedRow!=-1) {
+			public void onClick(final ClickEvent event) {
+				if (selectedRow != -1) {
 					lText.setVisible(true);
 					bYes.setVisible(true);
 					bNo.setVisible(true);
@@ -137,7 +150,7 @@ public class UserListMediator extends Mediator {
 		});
 
 		bYes.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				lText.setVisible(false);
 				bYes.setVisible(false);
 				bNo.setVisible(false);
@@ -146,14 +159,14 @@ public class UserListMediator extends Mediator {
 		});
 
 		bNo.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				lText.setVisible(false);
 				bYes.setVisible(false);
 				bNo.setVisible(false);
 			} 
 		});
 
-		this.setViewComponent(aPanel);
+		setViewComponent(aPanel);
 	}
 
 	/**
@@ -175,13 +188,13 @@ public class UserListMediator extends Mediator {
 	
 	/**
 	 * Insert in list.
-	 * @param col1 
-	 * @param col2 
-	 * @param col3 
-	 * @param col4 
-	 * @param col5 
+	 * @param col1 param1
+	 * @param col2 param2
+	 * @param col3 param3
+	 * @param col4 param4
+	 * @param col5 param5
 	 */
-	private void insertInList(String col1, String col2, String col3, String col4, String col5) {
+	private void insertInList(final String col1, final String col2, final String col3, final String col4, final String col5) {
 		int i = lastTableRow++;
 		table.setText(i, 0, col1);
 		table.setText(i, 1, col2);
@@ -192,13 +205,9 @@ public class UserListMediator extends Mediator {
 	
 	/**
 	 * Select the row.
-	 * @param row 
-	 * @param col2 
-	 * @param col3 
-	 * @param col4 
-	 * @param col5 
+	 * @param row the row
 	 */
-	private void selectRow(int row) {
+	private void selectRow(final int row) {
 		styleRow(selectedRow, false);
 		styleRow(row, true);
 		selectedRow = row;
@@ -207,10 +216,10 @@ public class UserListMediator extends Mediator {
 
 	/**
 	 * Set the style of the row.
-	 * @param row 
-	 * @param selected 
+	 * @param row the row
+	 * @param selected indicate if row should be selected
 	 */
-	private void styleRow(int row, boolean selected) {
+	private void styleRow(final int row, final boolean selected) {
 		if (row != -1) {
 			if (selected) {
 				table.getRowFormatter().addStyleName(row + 1,
@@ -245,45 +254,51 @@ public class UserListMediator extends Mediator {
 		sendNotification(ApplicationFacade.USER_SELECTED, userProxy.users().get(selectedRow));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String[] listNotificationInterests() {
+	public final String[] listNotificationInterests() {
 		return new String[] { ApplicationFacade.CANCEL_SELECTED, 
 				ApplicationFacade.USER_UPDATED,
 				ApplicationFacade.USER_DELETED,
 				ApplicationFacade.USER_ADDED,
-				ApplicationFacade.INIT_USERS
+				ApplicationFacade.INIT_USERS,
 				};	
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */	
 	@Override
-	public void handleNotification(INotification notification) {
-		if (userProxy == null)
-			userProxy = (UserProxy)this.getFacade().retrieveProxy(UserProxy.NAME);
+	public final void handleNotification(final INotification notification) {
+		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
 				
 		if (notification.getName().equals(ApplicationFacade.CANCEL_SELECTED)) {
 		} else if (notification.getName().equals(ApplicationFacade.USER_UPDATED)) {
 			clearList();
-			for (int i=0; i<userProxy.users().size(); i++) {
+			for (int i = 0; i < userProxy.users().size(); i++) {
 				insertInList(userProxy.users().get(i).username, userProxy.users().get(i).fname, 
-					userProxy.users().get(i).lname,userProxy.users().get(i).email, 
+					userProxy.users().get(i).lname, userProxy.users().get(i).email, 
 					userProxy.users().get(i).department.value);
 			}  
 		} else if (notification.getName().equals(ApplicationFacade.USER_DELETED)) {
 			clearList();
 			selectedRow = -1;
-			for(int i=0; i<userProxy.users().size(); i++) { 
+			for (int i = 0; i < userProxy.users().size(); i++) { 
 				insertInList(userProxy.users().get(i).username, userProxy.users().get(i).fname, 
-					userProxy.users().get(i).lname,userProxy.users().get(i).email, 
+					userProxy.users().get(i).lname, userProxy.users().get(i).email, 
 					userProxy.users().get(i).department.value);
 			}  
 		} else if (notification.getName().equals(ApplicationFacade.INIT_USERS)) {
-			for(int i=0; i<userProxy.users().size(); i++) {
+			clearList();
+			for (int i = 0; i < userProxy.users().size(); i++) {
 				insertInList(userProxy.users().get(i).username, userProxy.users().get(i).fname, 
-					userProxy.users().get(i).lname,userProxy.users().get(i).email, 
+					userProxy.users().get(i).lname, userProxy.users().get(i).email, 
 					userProxy.users().get(i).department.value);
 			}
 		} else if (notification.getName().equals(ApplicationFacade.USER_ADDED)) {
-			UserVO user = (UserVO)notification.getBody();
+			UserVO user = (UserVO) notification.getBody();
 			insertInList(user.username, user.fname, user.lname, user.email, user.department.value);
 		}
 		super.handleNotification(notification);

@@ -29,11 +29,13 @@ public class RoleVO {
 	/**
 	 * Constructor.
 	 */
-	public RoleVO(String username, List<RoleEnum> roles) {
-		if (username != null)
+	public RoleVO(final String username, final List<RoleEnum> roles) {
+		if (username != null) {
 			this.username = username;
-		if (roles != null)
+		}
+		if (roles != null) {
 			this.roles = new ArrayList<RoleEnum>(roles);
+		}
 	}
 
 }

@@ -23,14 +23,14 @@ import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * User form mediator.
  */
-public class UserFormMediator extends Mediator
-{
+public class UserFormMediator extends Mediator {
 	/**
 	 * Mediator name.
 	 */
@@ -79,24 +79,34 @@ public class UserFormMediator extends Mediator
 	 * Panels.
 	 */
 	private AbsolutePanel aPanel = new AbsolutePanel();
-	private CaptionPanel panel = new CaptionPanel("User Profile");
+	private CaptionPanel cpanel = new CaptionPanel("User Profile");
+
+	private static final int SPACING = 3;
 
 	/**
 	 * Constructor.
 	 */
-	public UserFormMediator()	{
-		super( NAME, null );
+	public UserFormMediator() {
+		super(NAME, null);
 		initView();
 	}
 
 	/**
-	 * Initialize the grid view.
+	 * Set the parent panel view.
+	 * @param panel the parent panel
+	 */
+	public final void setParentPanel(final Panel panel) {
+		panel.add(aPanel);
+	}
+	
+	/**
+	 * Initialize the user form view.
 	 */
 	private void initView() {
 		aPanel.setStyleName("pmvc-absolutePanelUserProfile");
-		panel.setStyleName("pmvc-absoluteCaptionPanelUserProfile");
-		panel.add(ft);
-		aPanel.add(panel);
+		cpanel.setStyleName("pmvc-absoluteCaptionPanelUserProfile");
+		cpanel.add(ft);
+		aPanel.add(cpanel);
 		
 		ft.setWidget(0, 0, lfname);
 		ft.setWidget(0, 1, tbfname);
@@ -115,61 +125,60 @@ public class UserFormMediator extends Mediator
 		ft.setWidget(7, 0, update);
 		ft.setWidget(7, 1, cancel);
 		
-		ft.setCellSpacing(3);
+		ft.setCellSpacing(SPACING);
 
 		setEnabledForm(false);
 
-		
 		// Add click listener
 		addUser.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onAdd();
 			}
 		});
 		
 		update.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onUpdate();
 			}
 		});
 
 		cancel.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onCancel();
 			}
 		});
 		
 		tbusername.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				updateForm();
 			}
-		} );
+		});
 		
 		tbpassword.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				updateForm();
 			}
-		} );
+		});
 		
 		tbconfirmpassword.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				updateForm();
 			}
-		} );
+		});
 		
 		lbdepartment.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				updateForm();
 			}
-		} );
+		});
 
 		lbdepartment.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				updateForm();
 			}
-		} );
+		});
 		
-		this.setViewComponent(aPanel);
+		setViewComponent(aPanel);
 	}
 
 	/**
@@ -208,7 +217,7 @@ public class UserFormMediator extends Mediator
 	 */
 	private void populateUserVO() {
 		String value = lbdepartment.getItemText(lbdepartment.getSelectedIndex());
-		for (int i=0; i<DeptEnum.list().size(); i++) {
+		for (int i = 0; i < DeptEnum.list().size(); i++) {
 			if (value.equals(DeptEnum.list().get(i).value)) {
 				user.department = DeptEnum.list().get(i);
 				break;
@@ -222,40 +231,40 @@ public class UserFormMediator extends Mediator
 		user.password = tbpassword.getText();
 	}
 		
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String[] listNotificationInterests() {
+	public final String[] listNotificationInterests() {
 		return new String[] { ApplicationFacade.NEW_USER, 
 				ApplicationFacade.USER_DELETED,
-				ApplicationFacade.USER_SELECTED
+				ApplicationFacade.USER_SELECTED,
 				};	
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void handleNotification(INotification notification) {
-		if (userProxy == null)
-			userProxy = (UserProxy)this.getFacade().retrieveProxy( UserProxy.NAME );
+	public final void handleNotification(final INotification notification) {
+		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
 		
 		if (notification.getName().equals(ApplicationFacade.NEW_USER)) {
-			user = (UserVO)notification.getBody();
+			user = (UserVO) notification.getBody();
 			clearForm();
 			tbfname.setFocus(true);
-			
 			setEnabledForm(true);
 			setMode(MODE_ADD);
 			updateForm();
-
 		} else if (notification.getName().equals(ApplicationFacade.USER_DELETED)) {
 			user = null;
 			clearForm();
 			setEnabledForm(false);
 			tbusername.setEnabled(false);
-
-
 		} else if (notification.getName().equals(ApplicationFacade.USER_SELECTED)) {
-			user = (UserVO)notification.getBody();
+			user = (UserVO) notification.getBody();
 			clearForm();
 			initForm();
-			
 			setEnabledForm(true);
 			setMode(MODE_EDIT);
 			updateForm();
@@ -265,27 +274,27 @@ public class UserFormMediator extends Mediator
 
 	/**
 	 * Set mode.
-	 * @param mode the mode
+	 * @param pmode the mode
 	 */
-	private void setMode(int mode) {
-		this.mode = mode;
+	private void setMode(final int pmode) {
+		mode = pmode;
 	}
 
 	/**
 	 * Sets whether this form is enabled.
-	 * @param arg0
+	 * @param arg the argument
 	 */
-	private void setEnabledForm(boolean arg0) {
-		tbfname.setEnabled(arg0);
-		tblname.setEnabled(arg0); 
-		tbemail.setEnabled(arg0); 
-		tbusername.setEnabled(arg0);
-		tbpassword.setEnabled(arg0);
-		tbconfirmpassword.setEnabled(arg0);
-		lbdepartment.setEnabled(arg0);
-		addUser.setEnabled(arg0);
-		update.setEnabled(arg0);
-		cancel.setEnabled(arg0);
+	private void setEnabledForm(final boolean arg) {
+		tbfname.setEnabled(arg);
+		tblname.setEnabled(arg); 
+		tbemail.setEnabled(arg); 
+		tbusername.setEnabled(arg);
+		tbpassword.setEnabled(arg);
+		tbconfirmpassword.setEnabled(arg);
+		lbdepartment.setEnabled(arg);
+		addUser.setEnabled(arg);
+		update.setEnabled(arg);
+		cancel.setEnabled(arg);
 	}
 	
 	/**
@@ -300,7 +309,7 @@ public class UserFormMediator extends Mediator
 		tbconfirmpassword.setText("");
 		lbdepartment.clear();
 		int indexSelected = 0;
-		for (int i=0; i<DeptEnum.list().size(); i++) {
+		for (int i = 0; i < DeptEnum.list().size(); i++) {
 			lbdepartment.addItem(DeptEnum.list().get(i).value);
 		}
 		lbdepartment.setSelectedIndex(indexSelected);
@@ -316,7 +325,7 @@ public class UserFormMediator extends Mediator
 		tbusername.setText(user.username);
 		tbpassword.setText(user.password);
 		tbconfirmpassword.setText(user.password);
-		for(int i=0; i<lbdepartment.getItemCount(); i++) {
+		for (int i = 0; i < lbdepartment.getItemCount(); i++) {
 			if (user.department.value.equals(lbdepartment.getItemText(i))) {
 				lbdepartment.setSelectedIndex(i);
 				break;
@@ -334,24 +343,23 @@ public class UserFormMediator extends Mediator
 			update.setEnabled(false);
 			ft.setWidget(7, 0, addUser);
 			
-			if ((tbusername.getText().length() > 0) && 
-				(tbpassword.getText().length() > 0) &&
-				(tbpassword.getText().equals(tbconfirmpassword.getText())) &&
-				(lbdepartment.getSelectedIndex() > 0)) {
+			if ((tbusername.getText().length() > 0)
+				&& (tbpassword.getText().length() > 0)
+				&& (tbpassword.getText().equals(tbconfirmpassword.getText()))
+				&& (lbdepartment.getSelectedIndex() > 0)) {
 					addUser.setEnabled(true);
 					update.setEnabled(true);
 			}
-		}
-		else if (mode == MODE_EDIT) {
+		} else if (mode == MODE_EDIT) {
 			tbusername.setEnabled(false);
 			addUser.setEnabled(false);
 			update.setEnabled(false);
 			ft.setWidget(7, 0, update);
 			
-			if ((tbusername.getText().length() > 0) && 
-				(tbpassword.getText().length() > 0) &&
-				(tbpassword.getText().equals(tbconfirmpassword.getText())) &&
-				(lbdepartment.getSelectedIndex() > 0)) {
+			if ((tbusername.getText().length() > 0)
+				&& (tbpassword.getText().length() > 0)
+				&& (tbpassword.getText().equals(tbconfirmpassword.getText()))
+				&& (lbdepartment.getSelectedIndex() > 0)) {
 					addUser.setEnabled(true);
 					update.setEnabled(true);
 			}

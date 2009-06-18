@@ -15,6 +15,9 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.view.UserListMediator;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.command.SimpleCommand;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
+
 /**
  * initialization of the view.
  * Register mediator and proxy
@@ -25,15 +28,26 @@ public class StartupCommand extends SimpleCommand {
 	 * Register mediator and proxy.
 	 * @param notification notification
 	 */
-	public void execute(final INotification notification) {
-		this.getFacade().registerProxy(new UserProxy());
-		this.getFacade().registerProxy(new RoleProxy());
+	public final void execute(final INotification notification) {
+		getFacade().registerProxy(new UserProxy());
+		getFacade().registerProxy(new RoleProxy());
 
-		this.getFacade().registerMediator(new UserListMediator());
-		this.getFacade().registerMediator(new RolePanelMediator());
-		this.getFacade().registerMediator(new UserFormMediator());
+		getFacade().registerMediator(new UserListMediator());
+		getFacade().registerMediator(new RolePanelMediator());
+		getFacade().registerMediator(new UserFormMediator());
+
+		Panel rootPanel = (Panel) notification.getBody();
+		HorizontalPanel topPanel = new HorizontalPanel();
+		HorizontalPanel bottomPanel = new HorizontalPanel();
+		rootPanel.add(topPanel);
+		rootPanel.add(bottomPanel);
+		
+		// Set the parent's layout
+		((UserListMediator) getFacade().retrieveMediator(UserListMediator.NAME)).setParentPanel(topPanel);
+		((UserFormMediator) getFacade().retrieveMediator(UserFormMediator.NAME)).setParentPanel(bottomPanel);
+		((RolePanelMediator) getFacade().retrieveMediator(RolePanelMediator.NAME)).setParentPanel(bottomPanel);
 		
 		// Initialization of the users list
-		this.getFacade().sendNotification(ApplicationFacade.INIT_USERS);  
+		getFacade().sendNotification(ApplicationFacade.INIT_USERS);  
 	}
 }

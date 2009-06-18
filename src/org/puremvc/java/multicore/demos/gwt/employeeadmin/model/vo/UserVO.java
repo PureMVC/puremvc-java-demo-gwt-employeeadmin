@@ -51,34 +51,40 @@ public class UserVO {
 	
 	/**
 	 * Constructor.
-	 * @param uname the user name
-	 * @param fname the first name
-	 * @param lname the last name
-	 * @param email the email
-	 * @param password the password
-	 * @param department the department
+	 * @param puname the user name
+	 * @param pfname the first name
+	 * @param plname the last name
+	 * @param pemail the email
+	 * @param ppassword the password
+	 * @param pdepartment the department
 	 */
-	public UserVO(String uname, String fname, String lname, String email,
-			String password, DeptEnum department) {
-		if (uname != null)
-			this.username = uname;
-		if (fname != null)
-			this.fname = fname;
-		if (lname != null)
-			this.lname = lname;
-		if (email != null)
-			this.email = email;
-		if (password != null)
-			this.password = password;
-		if (department != null)
-			this.department = department;
+	public UserVO(final String puname, final String pfname, final String plname, final String pemail,
+			final String ppassword, final DeptEnum pdepartment) {
+		if (puname != null) {
+			this.username = puname;
+		}
+		if (pfname != null) {
+			this.fname = pfname;
+		}
+		if (plname != null) {
+			this.lname = plname;
+		}
+		if (pemail != null) {
+			this.email = pemail;
+		}
+		if (ppassword != null) {
+			this.password = ppassword;
+		}
+		if (pdepartment != null) {
+			this.department = pdepartment;
+		}
 	}
 
 	/**
 	 * Check if is valid.
 	 * @return whether it is valid
 	 */
-	public boolean isValid() {
+	public final boolean isValid() {
 		return username != "" && password != ""
 				&& department != DeptEnum.NONE_SELECTED;
 	}
@@ -87,7 +93,7 @@ public class UserVO {
 	 * Concatenation of the last name with the first name.
 	 * @return the given name
 	 */
-	public String givenName() {
+	public final String givenName() {
 		return this.lname + ", " + this.fname;
 	}
 

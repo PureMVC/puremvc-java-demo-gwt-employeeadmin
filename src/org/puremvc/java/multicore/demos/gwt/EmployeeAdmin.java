@@ -21,6 +21,6 @@ public class EmployeeAdmin implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		ApplicationFacade applicationFacade = ApplicationFacade.getInstance();
-		applicationFacade.showIn(RootPanel.get());
+		applicationFacade.startup(RootPanel.get());
 	}
 }

@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -66,6 +67,9 @@ public class RolePanelMediator extends Mediator {
 	private Button bRemove = new Button("Remove");
 	private ListBox lbRoleCombo = new ListBox();
 
+	private static final int SPACING = 3;
+	private static final int VISIBLE_ITEM = 5;
+
 	/**
 	 * Mediator name.
 	 */
@@ -75,10 +79,18 @@ public class RolePanelMediator extends Mediator {
 	 * Constructor.
 	 */
 	public RolePanelMediator()	{
-		super( NAME, null );
+		super(NAME, null);
 		initView();
 	}
 	
+	/**
+	 * Set the parent panel view.
+	 * @param panel the parent panel
+	 */
+	public final void setParentPanel(final Panel panel) {
+		panel.add(aPanel);
+	}
+
 	/**
 	 * Initialize the role panel view.
 	 */
@@ -87,37 +99,36 @@ public class RolePanelMediator extends Mediator {
 		aPanel.setStyleName("pmvc-absolutePanelUserRoles");
 		lb.setStyleName("pmvc-listBox1UserRoles");
 		cpanel.setStyleName("pmvc-absoluteCaptionPanelUserRoles");
-		lb.setVisibleItemCount(5);
+		lb.setVisibleItemCount(VISIBLE_ITEM);
 		vpanel.add(lb);
 		cpanel.add(vpanel);
 		hpanel.add(lbRoleCombo);
 		hpanel.add(bAdd);
 		hpanel.add(bRemove);
 		vpanel.add(hpanel);
-		hpanel.setSpacing(3);
+		hpanel.setSpacing(SPACING);
 		aPanel.add(cpanel);
 
 		clearForm();
 
 		// Fill the combo
 		List<RoleEnum> comboList = RoleEnum.comboList();
-		for(int i=0; i<comboList.size(); i++) {
+		for (int i = 0; i < comboList.size(); i++) {
 			lbRoleCombo.addItem(comboList.get(i).value);	
 		}
 
 		// Add click listener
 		bAdd.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onAddRole();
 				clearForm();
 				initForm();
 				}
 		});
-		
 
 		// Add click listener
 		bRemove.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				onRemoveRole();
 				clearForm();
 				initForm();
@@ -126,11 +137,11 @@ public class RolePanelMediator extends Mediator {
 		
 		// Add click listener
 		lb.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if(lb.getSelectedIndex()>=0) {
+			public void onClick(final ClickEvent event) {
+				if (lb.getSelectedIndex() >= 0) {
 					List<RoleEnum> list = RoleEnum.comboList();
-					for(int i=0; i<list.size(); i++) {
-						if(list.get(i).value.equals(lb.getItemText(lb.getSelectedIndex()))) {
+					for (int i = 0; i < list.size(); i++) {
+						if (list.get(i).value.equals(lb.getItemText(lb.getSelectedIndex()))) {
 							selectedRole = list.get(i);
 							bAdd.setEnabled(false);
 							bRemove.setEnabled(true);
@@ -144,10 +155,10 @@ public class RolePanelMediator extends Mediator {
 		
 		// Add click listener
 		lbRoleCombo.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				List<RoleEnum> list = RoleEnum.comboList();
-				for(int i=0; i<list.size(); i++) {
-					if(list.get(i).value.equals(lbRoleCombo.getItemText(lbRoleCombo.getSelectedIndex()))) {
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).value.equals(lbRoleCombo.getItemText(lbRoleCombo.getSelectedIndex()))) {
 						selectedRole = list.get(i);
 						bAdd.setEnabled(true);
 						bRemove.setEnabled(false);
@@ -157,7 +168,7 @@ public class RolePanelMediator extends Mediator {
 			}
 		});
 		
-		this.setViewComponent(aPanel);
+		setViewComponent(aPanel);
 	}
 	
 	/**
@@ -174,11 +185,11 @@ public class RolePanelMediator extends Mediator {
 		roleProxy.removeRoleFromUser(user, selectedRole);
 	}
 	
-	@Override
 	/**
 	 * {@inheritDoc}
 	 */
-	public String[] listNotificationInterests() {
+	@Override
+	public final String[] listNotificationInterests() {
 		return new String[] { 					
 				ApplicationFacade.NEW_USER,
 				ApplicationFacade.USER_ADDED,
@@ -186,24 +197,23 @@ public class RolePanelMediator extends Mediator {
 				ApplicationFacade.USER_DELETED,
 				ApplicationFacade.CANCEL_SELECTED,
 				ApplicationFacade.USER_SELECTED,
-				ApplicationFacade.ADD_ROLE_RESULT
+				ApplicationFacade.ADD_ROLE_RESULT,
 				};	
 	}
 
-	@Override
 	/**
 	 * {@inheritDoc}
 	 */	
-	public void handleNotification(INotification notification) {
-		if (roleProxy == null)
-			roleProxy = (RoleProxy)this.getFacade().retrieveProxy(RoleProxy.NAME);
+	@Override
+	public final void handleNotification(final INotification notification) {
+		roleProxy = (RoleProxy) getFacade().retrieveProxy(RoleProxy.NAME);
 		
 		if (notification.getName().equals(ApplicationFacade.NEW_USER)) {
 			clearForm();
-		}else if (notification.getName().equals(ApplicationFacade.USER_ADDED)) {
-			user = (UserVO)notification.getBody();
+		} else if (notification.getName().equals(ApplicationFacade.USER_ADDED)) {
+			user = (UserVO) notification.getBody();
 			RoleVO roleVO = new RoleVO(user.username, null);
-			roleProxy.addItem( roleVO );
+			roleProxy.addItem(roleVO);
 			clearForm();
 			bAdd.setEnabled(false);
 			bRemove.setEnabled(false);
@@ -216,36 +226,33 @@ public class RolePanelMediator extends Mediator {
 		} else if (notification.getName().equals(ApplicationFacade.CANCEL_SELECTED)) {
 			clearForm();
 		} else if (notification.getName().equals(ApplicationFacade.USER_SELECTED)) {
-			user = (UserVO)notification.getBody();
+			user = (UserVO) notification.getBody();
 			userRoles = roleProxy.getUserRoles(user.username);
-		
 			bAdd.setEnabled(false);
 			bRemove.setEnabled(false);
 			lb.setEnabled(true);
 			lbRoleCombo.setEnabled(true);
-
 			lbRoleCombo.setSelectedIndex(0);
-
 			clearForm();
 			initForm();
 		} else if (notification.getName().equals(ApplicationFacade.ADD_ROLE_RESULT)) {
-		}
+		}		
 		super.handleNotification(notification);
 	}
 
 	/**
-	 * Clear the user's roles list box
+	 * Clear the user's roles list box.
 	 */
-	public void clearForm() {
+	public final void clearForm() {
 		lb.addItem("");
 		lb.clear();
 	}
 
 	/**
-	 * Initialize the user's roles list box
+	 * Initialize the user's roles list box.
 	 */
 	private void initForm() {
-		for(int i=0; i<userRoles.size(); i++) {
+		for (int i = 0; i < userRoles.size(); i++) {
 			lb.addItem(userRoles.get(i).value);
 		}
 	}

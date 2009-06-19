@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -78,17 +79,18 @@ public class RolePanelMediator extends Mediator {
 	/**
 	 * Constructor.
 	 */
-	public RolePanelMediator()	{
+	public RolePanelMediator() {
 		super(NAME, null);
-		initView();
 	}
 	
 	/**
-	 * Set the parent panel view.
-	 * @param panel the parent panel
+	 * {@inheritDoc}
 	 */
-	public final void setParentPanel(final Panel panel) {
-		panel.add(aPanel);
+	@Override
+	public final void onRegister() {
+		roleProxy = (RoleProxy) getFacade().retrieveProxy(RoleProxy.NAME);
+		initView();
+		super.onRegister();
 	}
 
 	/**
@@ -169,6 +171,7 @@ public class RolePanelMediator extends Mediator {
 		});
 		
 		setViewComponent(aPanel);
+		RootPanel.get("rolePanelContainer").add(aPanel);
 	}
 	
 	/**
@@ -197,7 +200,7 @@ public class RolePanelMediator extends Mediator {
 				ApplicationFacade.USER_DELETED,
 				ApplicationFacade.CANCEL_SELECTED,
 				ApplicationFacade.USER_SELECTED,
-				ApplicationFacade.ADD_ROLE_RESULT,
+				ApplicationFacade.ADD_ROLE_RESULT
 				};	
 	}
 
@@ -206,8 +209,6 @@ public class RolePanelMediator extends Mediator {
 	 */	
 	@Override
 	public final void handleNotification(final INotification notification) {
-		roleProxy = (RoleProxy) getFacade().retrieveProxy(RoleProxy.NAME);
-		
 		if (notification.getName().equals(ApplicationFacade.NEW_USER)) {
 			clearForm();
 		} else if (notification.getName().equals(ApplicationFacade.USER_ADDED)) {

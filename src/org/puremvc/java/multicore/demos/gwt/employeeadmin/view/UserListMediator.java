@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
@@ -70,15 +71,16 @@ public class UserListMediator extends Mediator {
 	 */
 	public UserListMediator() {
 		super(NAME, null);
-		initView();
 	}
 
 	/**
-	 * Set the parent panel view.
-	 * @param panel the parent panel
+	 * {@inheritDoc}
 	 */
-	public final void setParentPanel(final Panel panel) {
-		panel.add(aPanel);
+	@Override
+	public final void onRegister() {
+		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
+		initView();
+		super.onRegister();
 	}
 	
 	/**
@@ -167,6 +169,7 @@ public class UserListMediator extends Mediator {
 		});
 
 		setViewComponent(aPanel);
+		RootPanel.get("userListContainer").add(aPanel);
 	}
 
 	/**
@@ -263,7 +266,7 @@ public class UserListMediator extends Mediator {
 				ApplicationFacade.USER_UPDATED,
 				ApplicationFacade.USER_DELETED,
 				ApplicationFacade.USER_ADDED,
-				ApplicationFacade.INIT_USERS,
+				ApplicationFacade.INIT_USERS
 				};	
 	}
 	
@@ -272,8 +275,6 @@ public class UserListMediator extends Mediator {
 	 */	
 	@Override
 	public final void handleNotification(final INotification notification) {
-		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
-				
 		if (notification.getName().equals(ApplicationFacade.CANCEL_SELECTED)) {
 		} else if (notification.getName().equals(ApplicationFacade.USER_UPDATED)) {
 			clearList();

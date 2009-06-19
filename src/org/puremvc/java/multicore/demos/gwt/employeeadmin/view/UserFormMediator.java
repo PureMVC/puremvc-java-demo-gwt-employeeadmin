@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -88,17 +89,18 @@ public class UserFormMediator extends Mediator {
 	 */
 	public UserFormMediator() {
 		super(NAME, null);
-		initView();
 	}
 
 	/**
-	 * Set the parent panel view.
-	 * @param panel the parent panel
+	 * {@inheritDoc}
 	 */
-	public final void setParentPanel(final Panel panel) {
-		panel.add(aPanel);
+	@Override
+	public final void onRegister() {
+		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
+		initView();
+		super.onRegister();
 	}
-	
+
 	/**
 	 * Initialize the user form view.
 	 */
@@ -179,6 +181,7 @@ public class UserFormMediator extends Mediator {
 		});
 		
 		setViewComponent(aPanel);
+		RootPanel.get("userFormContainer").add(aPanel);
 	}
 
 	/**
@@ -238,7 +241,7 @@ public class UserFormMediator extends Mediator {
 	public final String[] listNotificationInterests() {
 		return new String[] { ApplicationFacade.NEW_USER, 
 				ApplicationFacade.USER_DELETED,
-				ApplicationFacade.USER_SELECTED,
+				ApplicationFacade.USER_SELECTED
 				};	
 	}
 	
@@ -247,8 +250,6 @@ public class UserFormMediator extends Mediator {
 	 */
 	@Override
 	public final void handleNotification(final INotification notification) {
-		userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);
-		
 		if (notification.getName().equals(ApplicationFacade.NEW_USER)) {
 			user = (UserVO) notification.getBody();
 			clearForm();

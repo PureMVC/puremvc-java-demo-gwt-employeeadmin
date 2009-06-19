@@ -20,7 +20,7 @@ public class ApplicationFacade extends Facade {
 
 	/**
 	 * Startup. <br>
-	 * Body : Panel
+	 * Body : null
 	 */
 	public static final String STARTUP = "startup";
 

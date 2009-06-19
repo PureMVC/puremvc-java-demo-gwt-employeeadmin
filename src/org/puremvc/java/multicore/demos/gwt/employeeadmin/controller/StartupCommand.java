@@ -33,21 +33,14 @@ public class StartupCommand extends SimpleCommand {
 		getFacade().registerProxy(new RoleProxy());
 
 		getFacade().registerMediator(new UserListMediator());
-		getFacade().registerMediator(new RolePanelMediator());
 		getFacade().registerMediator(new UserFormMediator());
+		getFacade().registerMediator(new RolePanelMediator());
 
-		Panel rootPanel = (Panel) notification.getBody();
-		HorizontalPanel topPanel = new HorizontalPanel();
-		HorizontalPanel bottomPanel = new HorizontalPanel();
-		rootPanel.add(topPanel);
-		rootPanel.add(bottomPanel);
-		
-		// Set the parent's layout
-		((UserListMediator) getFacade().retrieveMediator(UserListMediator.NAME)).setParentPanel(topPanel);
-		((UserFormMediator) getFacade().retrieveMediator(UserFormMediator.NAME)).setParentPanel(bottomPanel);
-		((RolePanelMediator) getFacade().retrieveMediator(RolePanelMediator.NAME)).setParentPanel(bottomPanel);
-		
 		// Initialization of the users list
-		getFacade().sendNotification(ApplicationFacade.INIT_USERS);  
+		getFacade().sendNotification(ApplicationFacade.INIT_USERS);
+		
+		// Remove the command because it never be called more than once
+		getFacade().removeCommand(ApplicationFacade.STARTUP);
 	}
+
 }

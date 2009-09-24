@@ -15,8 +15,6 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.view.UserListMediator;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.command.SimpleCommand;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * initialization of the view.

@@ -11,8 +11,6 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.controller.DeleteUserC
 import org.puremvc.java.multicore.demos.gwt.employeeadmin.controller.StartupCommand;
 import org.puremvc.java.multicore.patterns.facade.Facade;
 
-import com.google.gwt.user.client.ui.Panel;
-
 /**
  * Application facade. <i>Singleton</i>
  */
@@ -114,19 +112,20 @@ public class ApplicationFacade extends Facade {
 
     /**
      * Start the application.
-     * @param panel the panel
      */
-    public final void startup(final Panel panel) {
-         sendNotification(STARTUP, panel);    
+    public final void startup() {
+         sendNotification(STARTUP);    
      }
 	
 	/**
 	 * Initialize controller. Register the commands.
 	 */
+	@Override
 	protected final void initializeController() {
 		super.initializeController();
 		registerCommand(STARTUP, new StartupCommand());
 		registerCommand(DELETE_USER, new DeleteUserCommand());
 		registerCommand(ADD_ROLE_RESULT, new AddRoleResultCommand());
 	}
+	
 }

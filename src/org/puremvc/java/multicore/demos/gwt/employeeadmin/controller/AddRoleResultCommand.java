@@ -21,6 +21,7 @@ public class AddRoleResultCommand extends SimpleCommand {
 	 * and if it exists send an alert message 
 	 * @param notification notification
 	 */
+	@Override
 	public final void execute(final INotification notification) {
 		Boolean result = (Boolean) notification.getBody();
 		if (result == Boolean.FALSE) {

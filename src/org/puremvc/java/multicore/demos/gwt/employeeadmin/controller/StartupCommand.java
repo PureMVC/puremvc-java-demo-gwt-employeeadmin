@@ -26,6 +26,7 @@ public class StartupCommand extends SimpleCommand {
 	 * Register mediator and proxy.
 	 * @param notification notification
 	 */
+	@Override
 	public final void execute(final INotification notification) {
 		getFacade().registerProxy(new UserProxy());
 		getFacade().registerProxy(new RoleProxy());

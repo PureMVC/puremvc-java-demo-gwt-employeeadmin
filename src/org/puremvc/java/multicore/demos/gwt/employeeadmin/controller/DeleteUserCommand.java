@@ -23,6 +23,7 @@ public class DeleteUserCommand extends SimpleCommand {
 	 * and his roles. then send the USER_DELETED notification
 	 * @param notification notification
 	 */
+	@Override
 	public final void execute(final INotification notification) {
 		UserVO user = (UserVO) notification.getBody();
 		UserProxy userProxy = (UserProxy) getFacade().retrieveProxy(UserProxy.NAME);

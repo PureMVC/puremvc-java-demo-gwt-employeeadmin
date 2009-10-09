@@ -9,18 +9,16 @@ package org.puremvc.java.multicore.demos.gwt;
 import org.puremvc.java.multicore.demos.gwt.employeeadmin.ApplicationFacade;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class EmployeeAdmin implements EntryPoint {
-
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
 		ApplicationFacade applicationFacade = ApplicationFacade.getInstance();
-		applicationFacade.startup(RootPanel.get());
+		applicationFacade.startup();
 	}
 }

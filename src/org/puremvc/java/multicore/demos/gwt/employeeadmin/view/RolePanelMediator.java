@@ -16,20 +16,33 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.model.vo.UserVO;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.mediator.Mediator;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Role panel mediator.
  */
 public class RolePanelMediator extends Mediator {
+
+	/**
+	 * The declarative UI.
+	 */
+	@UiTemplate("RolePanel.ui.xml")
+	interface MyUiBinder extends UiBinder<Widget, RolePanelMediator> {
+	}
+
+	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
+	private static final int VISIBLE_ITEM = 10;
 
 	/**
 	 * Reference to the Controller.
@@ -47,29 +60,61 @@ public class RolePanelMediator extends Mediator {
 	private UserVO user;
 	
 	/**
-	 * Reference to the current user rsoles.
+	 * Reference to the current user roles.
 	 */
 	private List<RoleEnum> userRoles;
 		
 	/**
-	 * The panels.
-	 */
-	private AbsolutePanel aPanel = new AbsolutePanel();			
-	private CaptionPanel cpanel = new CaptionPanel("User Roles");
-	private VerticalPanel vpanel = new VerticalPanel();
-	private HorizontalPanel hpanel = new HorizontalPanel();
-
-	/**
 	 * The widgets.
 	 */
-	private ListBox lb = new ListBox();
-	private Button bAdd = new Button("Add");
-	private Button bRemove = new Button("Remove");
-	private ListBox lbRoleCombo = new ListBox();
+	@UiField CaptionPanel cpanel;
+	@UiField  ListBox lb = new ListBox();
+	@UiField  Button bAdd = new Button("Add");
+	@UiField  Button bRemove = new Button("Remove");
+	@UiField  ListBox lbRoleCombo = new ListBox();
 
-	private static final int SPACING = 3;
-	private static final int VISIBLE_ITEM = 5;
-
+	/**
+	 * The handler.
+	 */
+	@UiHandler({"lb", "bAdd", "bRemove", "lbRoleCombo"})
+	void doClick(ClickEvent event) {
+		if(event.getSource().equals(lb)) {
+			if (lb.getSelectedIndex() >= 0) {
+				List<RoleEnum> list = RoleEnum.comboList();
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).value.equals(lb.getItemText(lb.getSelectedIndex()))) {
+						selectedRole = list.get(i);
+						bAdd.setEnabled(false);
+						bRemove.setEnabled(true);
+						lbRoleCombo.setSelectedIndex(0);
+						break;
+					}
+				}					 
+			}
+		}
+		else if (event.getSource().equals(bAdd)) {
+			onAddRole();
+			clearForm();
+			initForm();
+		}
+		else if (event.getSource().equals(bRemove)) {
+			onRemoveRole();
+			clearForm();
+			initForm();
+		}
+		else if (event.getSource().equals(lbRoleCombo)) {
+			List<RoleEnum> list = RoleEnum.comboList();
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).value.equals(lbRoleCombo.getItemText(lbRoleCombo.getSelectedIndex()))) {
+					selectedRole = list.get(i);
+					bAdd.setEnabled(true);
+					bRemove.setEnabled(false);
+					break;
+				}
+			}					 
+		}
+	}	
+	
 	/**
 	 * Mediator name.
 	 */
@@ -96,81 +141,16 @@ public class RolePanelMediator extends Mediator {
 	 * Initialize the role panel view.
 	 */
 	private void initView() {
-		// Init the panels and widgets
-		aPanel.setStyleName("pmvc-absolutePanelUserRoles");
-		lb.setStyleName("pmvc-listBox1UserRoles");
-		cpanel.setStyleName("pmvc-absoluteCaptionPanelUserRoles");
+		uiBinder.createAndBindUi(this);
+		RootPanel.get("rolePanelContainer").add(cpanel);
+		
 		lb.setVisibleItemCount(VISIBLE_ITEM);
-		vpanel.add(lb);
-		cpanel.add(vpanel);
-		hpanel.add(lbRoleCombo);
-		hpanel.add(bAdd);
-		hpanel.add(bRemove);
-		vpanel.add(hpanel);
-		hpanel.setSpacing(SPACING);
-		aPanel.add(cpanel);
-
-		clearForm();
-
+		
 		// Fill the combo
 		List<RoleEnum> comboList = RoleEnum.comboList();
 		for (int i = 0; i < comboList.size(); i++) {
 			lbRoleCombo.addItem(comboList.get(i).value);	
 		}
-
-		// Add click listener
-		bAdd.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onAddRole();
-				clearForm();
-				initForm();
-				}
-		});
-
-		// Add click listener
-		bRemove.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onRemoveRole();
-				clearForm();
-				initForm();
-			}
-		});		
-		
-		// Add click listener
-		lb.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				if (lb.getSelectedIndex() >= 0) {
-					List<RoleEnum> list = RoleEnum.comboList();
-					for (int i = 0; i < list.size(); i++) {
-						if (list.get(i).value.equals(lb.getItemText(lb.getSelectedIndex()))) {
-							selectedRole = list.get(i);
-							bAdd.setEnabled(false);
-							bRemove.setEnabled(true);
-							lbRoleCombo.setSelectedIndex(0);
-							break;
-						}
-					}					 
-				}
-			}
-		});
-		
-		// Add click listener
-		lbRoleCombo.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				List<RoleEnum> list = RoleEnum.comboList();
-				for (int i = 0; i < list.size(); i++) {
-					if (list.get(i).value.equals(lbRoleCombo.getItemText(lbRoleCombo.getSelectedIndex()))) {
-						selectedRole = list.get(i);
-						bAdd.setEnabled(true);
-						bRemove.setEnabled(false);
-						break;
-					}
-				}					 
-			}
-		});
-		
-		setViewComponent(aPanel);
-		RootPanel.get("rolePanelContainer").add(aPanel);
 	}
 	
 	/**

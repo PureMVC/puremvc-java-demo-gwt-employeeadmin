@@ -15,7 +15,6 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.view.UserListMediator;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.command.SimpleCommand;
 
-
 /**
  * initialization of the view.
  * Register mediator and proxy

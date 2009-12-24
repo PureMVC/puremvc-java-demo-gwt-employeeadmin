@@ -1,0 +1,71 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'> 
+    
+	<ui:style>
+		.box{
+			border:0px;
+			border-collapse:collapse;
+			padding: 0px;
+		}
+		.box > div{
+			border:1px solid #d9e6f0;
+			border-collapse:collapse;
+		}	
+		.box h3{
+			margin: 0px;
+			background:#e3e9ff;
+			border-bottom:1px solid #d9e6f0;
+			padding: 2px;
+			color:#375b91;
+		}
+		.table{
+			background:none;
+			border-collapse:collapse;
+			margin: 4px;		
+		}
+		.table > tbody > tr > td{
+			border:1px solid #d9e6f0;
+			padding: 2px;
+		} 
+		.table > tbody > tr{
+			color:#375b91;
+		} 
+		.table > tbody > tr:first-child{
+			background:#e3e9ff;
+			color:#000000;
+		} 	
+		.hpanel{
+			background:none;
+			border-collapse:collapse;
+		}
+		.hpanel > tbody > tr > td > div{ 
+			padding: 0px;
+ 			margin: 4px; 		
+    	}   
+    	.hpanel > tbody > tr > td > button{ 
+ 			width: 80px;
+			padding: 2px 0px 0px 0px;
+ 			margin: 4px; 		
+    	}
+	</ui:style>
+    
+ 	<g:CaptionPanel styleName='{style.box}' ui:field='cpanel' >
+		<g:HTMLPanel> 		
+	 	<g:HTML><h3>Users</h3></g:HTML>
+		<g:FlowPanel ui:field="listFlowPanel">
+			<g:ScrollPanel height='130px' ui:field="listPanel">
+				<g:FlexTable width='800px' styleName='{style.table}' ui:field="table">
+				</g:FlexTable>	
+			</g:ScrollPanel>
+		</g:FlowPanel>
+		<g:HorizontalPanel styleName='{style.hpanel}'>
+			<g:Button ui:field="bDelete">Delete</g:Button>
+			<g:Button ui:field="bNew">New</g:Button>
+			<g:Label ui:field="lText">Are you sure?</g:Label>
+			<g:Button ui:field="bYes">Yes</g:Button>
+			<g:Button ui:field="bNo">No</g:Button>		
+		</g:HorizontalPanel>
+		</g:HTMLPanel>
+	</g:CaptionPanel>
+
+</ui:UiBinder>

@@ -12,24 +12,36 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.model.vo.UserVO;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.mediator.Mediator;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 
 /**
  * User list mediator.
  */
 public class UserListMediator extends Mediator {
+
+	/**
+	 * The declarative UI.
+	 */
+	@UiTemplate("UserList.ui.xml")
+	interface MyUiBinder extends UiBinder<Widget, UserListMediator> {
+	}
+
+	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 	/**
 	 * Mediator name.
@@ -42,28 +54,53 @@ public class UserListMediator extends Mediator {
 	private UserProxy userProxy = null;
 
 	/**
-	 * Panels.
-	 */
-	private AbsolutePanel aPanel = new AbsolutePanel();
-	private CaptionPanel cpanel = new CaptionPanel("Users");
-	private VerticalPanel vpanel = new VerticalPanel();
-	
-	/**
 	 * Widgets.
 	 */
-	private Button bDelete = new Button("Delete");
-	private Button bNew = new Button("New");
-	private Button bYes = new Button("Yes");
-	private Button bNo = new Button("No");
-	private Label lText = new Label("Are you sure?");
-	private FlexTable table = new FlexTable();
-	private FlowPanel listFlowPanel = new FlowPanel();
-	private ScrollPanel listPanel = new ScrollPanel(table);
+	@UiField CaptionPanel cpanel;
+	@UiField Button bDelete;
+	@UiField Button bNew;
+	@UiField Button bYes;
+	@UiField Button bNo;
+	@UiField Label lText;
+	@UiField FlexTable table;
+	@UiField FlowPanel listFlowPanel;
+	@UiField ScrollPanel listPanel;
 
 	private int lastTableRow = 0;
 	private int selectedRow = -1;
-
-	private static final int SPACING = 3;
+	
+	/**
+	 * The handler.
+	 */
+	@UiHandler({"table", "bDelete", "bNew", "bYes", "bNo"})
+	void doClick(ClickEvent event) {
+		if(event.getSource().equals(table)) {
+			Cell cell = table.getCellForEvent(event);
+			if (cell != null) {
+				int row = cell.getRowIndex();
+				if (row > 0) {
+					selectRow(row - 1);
+				}
+			}
+		} else if(event.getSource().equals(bDelete)) {
+			if (selectedRow != -1) {
+				lText.setVisible(true);
+				bYes.setVisible(true);
+				bNo.setVisible(true);
+			}
+		} else if(event.getSource().equals(bNew)) {
+			onNew();
+		} else if(event.getSource().equals(bYes)) {
+			lText.setVisible(false);
+			bYes.setVisible(false);
+			bNo.setVisible(false);
+			onDelete();
+		} else if(event.getSource().equals(bNo)) {
+			lText.setVisible(false);
+			bYes.setVisible(false);
+			bNo.setVisible(false);
+		}
+	}
 	
 	/**
 	 * Constructor.
@@ -86,89 +123,14 @@ public class UserListMediator extends Mediator {
 	 * Initialize the user list view.
 	 */
 	private void initView() {
-		aPanel.setStyleName("pmvc-absolutePanelUsers");
-		cpanel.setStyleName("pmvc-absoluteCaptionUsers");
-		cpanel.add(vpanel);
-		aPanel.add(cpanel);
-		
-		// Setup the table.
-		table.setCellSpacing(0);
-		table.setCellPadding(0);
-		table.setWidth("100%");
-		table.addStyleName("pmvc-watchListUsers");
-		table.getRowFormatter().addStyleName(0, "pmvc-watchListHeaderUsers");
-
-		insertInList("Username", "First Name", "Last Name", "Email", "Department");
-		
-		listPanel.addStyleName("pmvc-listePanelUsers");
-		listPanel.setSize("100%", "100%");
-		
-		listFlowPanel.setStyleName("pmvc-listeFlowPanelUsers");
-		listFlowPanel.add(listPanel);
-
-		vpanel.add(listFlowPanel);
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(bDelete);
-		hp.add(bNew);
-		hp.add(lText);
-		hp.add(bYes);
-		hp.add(bNo);
+		uiBinder.createAndBindUi(this);
+		RootPanel.get("userListContainer").add(cpanel);
 		
 		lText.setVisible(false);
 		bYes.setVisible(false);
 		bNo.setVisible(false);
 		
-		vpanel.add(hp);
-		hp.setSpacing(SPACING);
-		vpanel.setSpacing(SPACING);
-		
-		table.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				Cell cell = table.getCellForEvent(event);
-				if (cell != null) {
-					int row = cell.getRowIndex();
-					if (row > 0) {
-						selectRow(row - 1);
-					}
-				}
-			}
-		});
-		
-		bNew.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onNew();
-			} 
-		});
-
-		bDelete.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				if (selectedRow != -1) {
-					lText.setVisible(true);
-					bYes.setVisible(true);
-					bNo.setVisible(true);
-				}
-			} 
-		});
-
-		bYes.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				lText.setVisible(false);
-				bYes.setVisible(false);
-				bNo.setVisible(false);
-				onDelete();
-			} 
-		});
-
-		bNo.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				lText.setVisible(false);
-				bYes.setVisible(false);
-				bNo.setVisible(false);
-			} 
-		});
-
-		setViewComponent(aPanel);
-		RootPanel.get("userListContainer").add(aPanel);
+		insertInList("Username", "First Name", "Last Name", "Email", "Department");
 	}
 
 	/**
@@ -183,8 +145,6 @@ public class UserListMediator extends Mediator {
 
 		lastTableRow = 0;
 
-		table.addStyleName("pmvc-watchListUsers");
-		table.getRowFormatter().addStyleName(0, "pmvc-watchListHeaderUsers");
 		insertInList("Username", "First Name", "Last Name", "Email", "Department");
 	}
 	
@@ -224,11 +184,9 @@ public class UserListMediator extends Mediator {
 	private void styleRow(final int row, final boolean selected) {
 		if (row != -1) {
 			if (selected) {
-				table.getRowFormatter().addStyleName(row + 1,
-						"pmvc-SelectedRowUsers");
+				DOM.setStyleAttribute(table.getRowFormatter().getElement(row+1), "background", "LightGrey  ");
 			} else {
-				table.getRowFormatter().removeStyleName(row + 1,
-						"pmvc-SelectedRowUsers");
+				DOM.setStyleAttribute(table.getRowFormatter().getElement(row+1), "background", "");
 			}
 		}
 	}

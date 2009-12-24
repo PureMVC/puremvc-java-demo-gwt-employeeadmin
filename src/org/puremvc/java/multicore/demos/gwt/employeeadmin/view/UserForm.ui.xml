@@ -1,0 +1,79 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'> 
+    
+	<ui:style>
+		.box { 
+			border:0px;
+			border-collapse:collapse;
+			padding: 0px;
+	    }
+	    .box > div{
+			border:1px solid #d9e6f0;
+			border-collapse:collapse;
+		}	
+		.box h3{
+			margin: 0px;
+			background:#e3e9ff;
+			border-bottom:1px solid #d9e6f0;
+			padding: 2px;
+			color:#375b91;
+		}	
+	    .box > div > table > tbody > tr > td{ 
+ 			width: 150px;
+			padding: 2px 2px 2px 2px;
+	 		margin: 0px; 		
+	 		background:#e3e9ff;
+	 		border:1px solid #d9e6f0;
+	    }
+	    .box > div > button{ 
+	 		width: 92px;
+			padding: 0px;
+	 		margin: 4px; 		
+	    }
+	    .table{
+			background:none;
+			border-collapse:collapse;
+			margin: 4px;
+		}
+	</ui:style>
+ 
+ 	<g:CaptionPanel styleName='{style.box}' ui:field='cpanel' >
+		<g:HTMLPanel>
+		<g:HTML><h3>User Profile</h3></g:HTML>
+		<table width='390px' class='{style.table}'>
+   			<tr>
+   				<td><g:Label>First Name</g:Label></td>
+   				<td><g:TextBox ui:field="tbfname"></g:TextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Last Name</g:Label></td>
+   				<td><g:TextBox ui:field="tblname"></g:TextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Email</g:Label></td>
+   				<td><g:TextBox ui:field="tbemail"></g:TextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Username*</g:Label></td>
+   				<td><g:TextBox ui:field="tbusername"></g:TextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Password*</g:Label></td>
+   				<td><g:PasswordTextBox ui:field="tbpassword"></g:PasswordTextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Confirm Password*</g:Label></td>
+   				<td><g:PasswordTextBox ui:field="tbconfirmpassword"></g:PasswordTextBox></td>
+   			</tr>
+   			<tr>
+   				<td><g:Label>Department</g:Label></td>
+   				<td><g:ListBox ui:field="lbdepartment"></g:ListBox></td>
+   			</tr>
+		</table>
+		<g:Button ui:field="update">Update user</g:Button>
+		<g:Button ui:field="add">Add user</g:Button>
+		<g:Button ui:field="cancel">Cancel</g:Button>	
+		</g:HTMLPanel>
+	</g:CaptionPanel>
+     
+</ui:UiBinder>

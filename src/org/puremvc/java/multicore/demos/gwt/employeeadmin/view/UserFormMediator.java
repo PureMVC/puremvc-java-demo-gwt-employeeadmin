@@ -1,9 +1,3 @@
-/*
- PureMVC Java MultiCore Demo - GWT Employee Admin by Anthony Quinault <anthony.quinault@puremvc.org>
- Based upon PureMVC AS3 Demo - Flex Employee Admin - Copyright(c) 2007-08 Cliff Hall <clifford.hall@puremvc.org>
- Your reuse is governed by the Creative Commons Attribution 3.0 License
- */
-
 package org.puremvc.java.multicore.demos.gwt.employeeadmin.view;
 
 import org.puremvc.java.multicore.demos.gwt.employeeadmin.ApplicationFacade;
@@ -13,36 +7,35 @@ import org.puremvc.java.multicore.demos.gwt.employeeadmin.model.vo.UserVO;
 import org.puremvc.java.multicore.interfaces.INotification;
 import org.puremvc.java.multicore.patterns.mediator.Mediator;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * User form mediator.
+ * Message mediator.
  */
 public class UserFormMediator extends Mediator {
-	/**
-	 * Mediator name.
-	 */
-	public static final String NAME = "UserFormMediator";
 
 	/**
-	 * Mode.
+	 * The declarative UI.
 	 */
-	public static final int MODE_ADD = 0;
-	public static final int MODE_EDIT = 1;
-	private int mode = MODE_ADD;
-	
+	@UiTemplate("UserForm.ui.xml")
+	interface MyUiBinder extends UiBinder<Widget, UserFormMediator> {
+	}
+
+	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
 	/**
 	 * Reference to the user proxy.
 	 */
@@ -56,33 +49,50 @@ public class UserFormMediator extends Mediator {
 	/**
 	 * Widgets.
 	 */
-	private Button addUser = new Button("Add User");
-	private Button update = new Button("Update User");
-	private Button cancel = new Button("Cancel");
-	private Label lfname = new Label("First Name");
-	private TextBox tbfname = new TextBox();
-	private Label llname = new Label("Last Name");
-	private TextBox tblname = new TextBox();
-	private Label lemail = new Label("Email");
-	private TextBox tbemail = new TextBox();
-	private Label lusername = new Label("Username *");
-	private TextBox tbusername = new TextBox();
-	private Label lpassword = new Label("Password *");
-	private PasswordTextBox tbpassword = new PasswordTextBox();
-	private Label lconfirmpassword = new Label("Confirm Password *");
-	private PasswordTextBox tbconfirmpassword = new PasswordTextBox();
-	private Label ldepartment = new Label("Department *");
-	private ListBox lbdepartment = new ListBox();
-	private FlexTable ft = new FlexTable();
+	@UiField CaptionPanel cpanel;
+	@UiField TextBox tbfname;
+	@UiField TextBox tblname;
+	@UiField TextBox tbemail;
+	@UiField TextBox tbusername;
+	@UiField PasswordTextBox tbpassword;
+	@UiField PasswordTextBox tbconfirmpassword;
+	@UiField ListBox lbdepartment;
+	@UiField Button update;
+	@UiField Button add;
+	@UiField Button cancel;
+	
+	/**
+	 * The handlers.
+	 */
+	@UiHandler({"tbfname","tblname", "tbemail", "tbusername", "tbpassword", "tbconfirmpassword"})
+	void doChangeValue(ValueChangeEvent<String> event) {
+		updateForm();
+	}
+
+	@UiHandler({"lbdepartment", "add", "update", "cancel"})
+	void doClick(ClickEvent event) {
+		if(event.getSource().equals(add))
+			onAdd();
+		if(event.getSource().equals(update))
+			onUpdate();
+		if(event.getSource().equals(cancel))
+			onCancel();
+		else if (event.getSource().equals(lbdepartment))
+			updateForm();
+	}
+		
+	/**
+	 * Mediator name.
+	 */
+	public static final String NAME = "UserFormMediator";
 
 	/**
-	 * Panels.
+	 * Mode.
 	 */
-	private AbsolutePanel aPanel = new AbsolutePanel();
-	private CaptionPanel cpanel = new CaptionPanel("User Profile");
-
-	private static final int SPACING = 3;
-
+	public static final int MODE_ADD = 0;
+	public static final int MODE_EDIT = 1;
+	private int mode = MODE_ADD;
+	
 	/**
 	 * Constructor.
 	 */
@@ -99,89 +109,24 @@ public class UserFormMediator extends Mediator {
 		initView();
 		super.onRegister();
 	}
-
+	
 	/**
-	 * Initialize the user form view.
+	 * Initialize the message view.
 	 */
 	private void initView() {
-		aPanel.setStyleName("pmvc-absolutePanelUserProfile");
-		cpanel.setStyleName("pmvc-absoluteCaptionPanelUserProfile");
-		cpanel.add(ft);
-		aPanel.add(cpanel);
-		
-		ft.setWidget(0, 0, lfname);
-		ft.setWidget(0, 1, tbfname);
-		ft.setWidget(1, 0, llname);
-		ft.setWidget(1, 1, tblname);
-		ft.setWidget(2, 0, lemail);
-		ft.setWidget(2, 1, tbemail);
-		ft.setWidget(3, 0, lusername);
-		ft.setWidget(3, 1, tbusername);
-		ft.setWidget(4, 0, lpassword);
-		ft.setWidget(4, 1, tbpassword);
-		ft.setWidget(5, 0, lconfirmpassword);
-		ft.setWidget(5, 1, tbconfirmpassword);
-		ft.setWidget(6, 0, ldepartment);
-		ft.setWidget(6, 1, lbdepartment);
-		ft.setWidget(7, 0, update);
-		ft.setWidget(7, 1, cancel);
-		
-		ft.setCellSpacing(SPACING);
-
+		uiBinder.createAndBindUi(this);
+		RootPanel.get("userFormContainer").add(cpanel);
 		setEnabledForm(false);
-
-		// Add click listener
-		addUser.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onAdd();
-			}
-		});
-		
-		update.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onUpdate();
-			}
-		});
-
-		cancel.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				onCancel();
-			}
-		});
-		
-		tbusername.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(final KeyUpEvent event) {
-				updateForm();
-			}
-		});
-		
-		tbpassword.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(final KeyUpEvent event) {
-				updateForm();
-			}
-		});
-		
-		tbconfirmpassword.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(final KeyUpEvent event) {
-				updateForm();
-			}
-		});
-		
-		lbdepartment.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				updateForm();
-			}
-		});
-
-		lbdepartment.addKeyUpHandler(new KeyUpHandler() {
-			public void onKeyUp(final KeyUpEvent event) {
-				updateForm();
-			}
-		});
-		
-		setViewComponent(aPanel);
-		RootPanel.get("userFormContainer").add(aPanel);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.puremvc.java.multicore.patterns.mediator.Mediator#onRemove()
+	 */
+	@Override
+	public void onRemove() {
+		super.onRemove();
+		RootPanel.get().remove(cpanel);
+	}	
 
 	/**
 	 * Add a user and send a notification.
@@ -232,7 +177,7 @@ public class UserFormMediator extends Mediator {
 		user.username = tbusername.getText();
 		user.password = tbpassword.getText();
 	}
-		
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -271,7 +216,7 @@ public class UserFormMediator extends Mediator {
 		}
 		super.handleNotification(notification);
 	}
-
+	
 	/**
 	 * Set mode.
 	 * @param pmode the mode
@@ -292,7 +237,7 @@ public class UserFormMediator extends Mediator {
 		tbpassword.setEnabled(arg);
 		tbconfirmpassword.setEnabled(arg);
 		lbdepartment.setEnabled(arg);
-		addUser.setEnabled(arg);
+		add.setEnabled(arg);
 		update.setEnabled(arg);
 		cancel.setEnabled(arg);
 	}
@@ -314,7 +259,7 @@ public class UserFormMediator extends Mediator {
 		}
 		lbdepartment.setSelectedIndex(indexSelected);
 	}
-
+	
 	/**
 	 * Initialize this form.
 	 */
@@ -339,28 +284,29 @@ public class UserFormMediator extends Mediator {
 	private void updateForm() {
 		if (mode == MODE_ADD) {
 			tbusername.setEnabled(true);
-			addUser.setEnabled(false);
 			update.setEnabled(false);
-			ft.setWidget(7, 0, addUser);
+			update.setVisible(false);
+			add.setEnabled(false);
+			add.setVisible(true);
 			
 			if ((tbusername.getText().length() > 0)
 				&& (tbpassword.getText().length() > 0)
 				&& (tbpassword.getText().equals(tbconfirmpassword.getText()))
 				&& (lbdepartment.getSelectedIndex() > 0)) {
-					addUser.setEnabled(true);
-					update.setEnabled(true);
+					add.setEnabled(true);
 			}
 		} else if (mode == MODE_EDIT) {
 			tbusername.setEnabled(false);
-			addUser.setEnabled(false);
+			add.setEnabled(false);
+			add.setVisible(false);
 			update.setEnabled(false);
-			ft.setWidget(7, 0, update);
+			update.setVisible(true);
 			
 			if ((tbusername.getText().length() > 0)
 				&& (tbpassword.getText().length() > 0)
 				&& (tbpassword.getText().equals(tbconfirmpassword.getText()))
 				&& (lbdepartment.getSelectedIndex() > 0)) {
-					addUser.setEnabled(true);
+					add.setEnabled(true);
 					update.setEnabled(true);
 			}
 		}

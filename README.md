@@ -2,7 +2,6 @@
 This demo illustrates techniques for performing routine maintenance operations in a PureMVC-based application using [GWT](http://en.wikipedia.org/wiki/Google_Web_Toolkit) view components.
 
 * [Discussion](http://forums.puremvc.org/index.php?topic=1269.0)
-* [Live Demo](http://employeeadm.appspot.com/)
 
 ## Screenshot
 ![PureMVC Java Demo: Employee Admin](http://puremvc.org/pages/images/screenshots/PureMVC-Shot-Java-EmployeeAdmin.png)
@@ -11,7 +10,7 @@ This demo illustrates techniques for performing routine maintenance operations i
 Production - [Version 2.0](https://github.com/PureMVC/puremvc-java-demo-gwt-employeeadmin/blob/master/VERSION)
 
 ## Platforms / Technologies
-* [Java](http://en.wikipedia.org/wiki/Java_(programming_language\))
+* [Java](http://en.wikipedia.org/wiki/Java_\(programming_language\))
 * [Google Web Toolkit](http://en.wikipedia.org/wiki/Google_Web_Toolkit)
 
 ## License
